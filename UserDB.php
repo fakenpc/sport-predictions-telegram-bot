@@ -8,20 +8,20 @@ use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\DB;
 //use PDO;
 
-class CapperDB extends DB
+class UserDB extends DB
 {
     /**
-     * Initialize capper table
+     * Initialize user table
      */
-    public static function initializeCapper()
+    public static function initializeUser()
     {
-        if (!defined('TB_CAPPER')) {
-            define('TB_CAPPER', self::$table_prefix . 'capper');
+        if (!defined('TB_USER')) {
+            define('TB_USER', self::$table_prefix . 'user');
         }
     }
 
     /**
-     * Select a cappers from the DB
+     * Select a users from the DB
      *
      * @param int   $id
      * @param int|null $limit
@@ -29,7 +29,7 @@ class CapperDB extends DB
      * @return array|bool
      * @throws TelegramException
      */
-    public static function selectCapper($id = null, $limit = null)
+    public static function selectUser($id = null, $limit = null)
     {
         if (!self::isDbConnected()) {
             return false;
@@ -38,7 +38,7 @@ class CapperDB extends DB
         try {
             $sql = '
               SELECT *
-              FROM `' . TB_CAPPER . '`
+              FROM `' . TB_USER . '`
             ';
 
             $where = array();
@@ -51,6 +51,8 @@ class CapperDB extends DB
                     $where[] = '`id` = :id';
                 }
             }
+
+            
 
             if(count($where)) {
                 $sql .= ' WHERE '.join(' AND ', $where);
@@ -79,41 +81,6 @@ class CapperDB extends DB
     }
 
     /**
-     * Insert the capper in the database
-     *
-     * @param string $name
-     * @param string $description
-     *
-     * @return string last insert id
-     * @throws TelegramException
-     */
-    public static function insertCapper($name, $description)
-    {
-        if (!self::isDbConnected()) {
-            return false;
-        }
-
-        try {
-            $sth = self::$pdo->prepare('INSERT INTO `' . TB_CAPPER . '`
-                (`name`, `description`)
-                VALUES
-                (:name, :description)
-            ');
-
-            // $date = self::getTimestamp();
-
-            $sth->bindValue(':name', $name);
-            $sth->bindValue(':description', $description);
-
-            $sth->execute();
-
-            return self::$pdo->lastInsertId();
-        } catch (Exception $e) {
-            throw new TelegramException($e->getMessage());
-        }
-    }
-
-    /**
      * Update a specific run
      *
      * @param array $fields_values
@@ -122,8 +89,8 @@ class CapperDB extends DB
      * @return bool
      * @throws TelegramException
      */
-    public static function updateCapper(array $fields_values, array $where_fields_values)
+    public static function updateUser(array $fields_values, array $where_fields_values)
     {
-        return self::update(TB_CAPPER, $fields_values, $where_fields_values);
+        return self::update(TB_USER, $fields_values, $where_fields_values);
     }
 }

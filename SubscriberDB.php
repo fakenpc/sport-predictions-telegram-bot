@@ -30,7 +30,7 @@ class SubscriberDB extends DB
      * @return array|bool
      * @throws TelegramException
      */
-    public static function selectSubscriber($id = null, $capper_id = null, $capper_subscription_id = null, $login = null, $chat_id = null, $start_timestamp = null, $end_timestamp = null, $paid = null, $limit = null)
+    public static function selectSubscriber($id = null, $capper_id = null, $capper_subscription_id = null, $user_id = null, $chat_id = null, $start_timestamp = null, $end_timestamp = null, $paid = null, $limit = null)
     {
         if (!self::isDbConnected()) {
             return false;
@@ -61,8 +61,8 @@ class SubscriberDB extends DB
                 $where[] = '`capper_subscription_id` = :capper_subscription_id';
             }
 
-            if($login !== null) {
-                $where[] = '`login` = :login';
+            if($user_id !== null) {
+                $where[] = '`user_id` = :user_id';
             }
 
             if($chat_id !== null) {
@@ -103,8 +103,8 @@ class SubscriberDB extends DB
                 $sth->bindValue(':capper_subscription_id', $capper_subscription_id, PDO::PARAM_INT);
             }
 
-            if($login !== null) {
-                $sth->bindValue(':login', $login, PDO::PARAM_INT);
+            if($user_id !== null) {
+                $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
             }
 
             if($chat_id !== null) {
@@ -144,7 +144,7 @@ class SubscriberDB extends DB
      * @return bool
      * @throws TelegramException
      */
-    public static function insertSubscriber($capper_id = null, $capper_subscription_id = null, $login = null, $chat_id = null, $start_timestamp = null, $end_timestamp = null, $paid = null)
+    public static function insertSubscriber($capper_id = null, $capper_subscription_id = null, $user_id = null, $chat_id = null, $start_timestamp = null, $end_timestamp = null, $paid = null)
     {
         if (!self::isDbConnected()) {
             return false;
@@ -152,7 +152,7 @@ class SubscriberDB extends DB
 
         try {
             $sth = self::$pdo->prepare('INSERT INTO `' . TB_SUBSCRIBER . '`
-                (`capper_id`, `capper_subscription_id`, `login`, `chat_id`, `start_timestamp`, `end_timestamp`, `paid`)
+                (`capper_id`, `capper_subscription_id`, `user_id`, `chat_id`, `start_timestamp`, `end_timestamp`, `paid`)
                 VALUES
                 (:capper_id, :capper_subscription_id, :chat_id, :start_timestamp, :start_timestamp, :end_timestamp, :paid)
             ');
@@ -161,7 +161,7 @@ class SubscriberDB extends DB
 
             $sth->bindValue(':capper_id', $capper_id);
             $sth->bindValue(':capper_subscription_id', $capper_subscription_id);
-            $sth->bindValue(':login', $login);
+            $sth->bindValue(':user_id', $user_id);
             $sth->bindValue(':chat_id', $chat_id);
             $sth->bindValue(':start_timestamp', $start_timestamp);
             $sth->bindValue(':end_timestamp', $end_timestamp);

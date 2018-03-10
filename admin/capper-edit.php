@@ -144,22 +144,25 @@
 							}
 
 							print '
-								<form enctype="multipart/form-data" action="'.($id ? '?id='.$id : '#').'" method="POST">
-									<div class="form-group">
-										<label for="name">Имя</label>
-										<input type="text" class="form-control" name="name" placeholder="Имя" value="'.$name.'">
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<form enctype="multipart/form-data" action="'.($id ? '?id='.$id : '#').'" method="POST">
+											<div class="form-group">
+												<label for="name">Имя</label>
+												<input type="text" class="form-control" name="name" placeholder="Имя" value="'.$name.'">
+											</div>
+											<div class="form-group">
+												<label for="description">Описание</label>
+												<textarea class="form-control" rows="5" name="description" placeholder="Описание">'.$description.'</textarea>
+											</div>
+											<div class="form-group">
+												<label for="image">Изображение</label>
+												<input type="file" name="image"/>
+											</div>
+											<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+										</form>
 									</div>
-									<div class="form-group">
-										<label for="description">Описание</label>
-										<input type="text" class="form-control" name="description" placeholder="Описание" value="'.$description.'">
-									</div>
-									<div class="form-group">
-										<label for="image">Изображение</label>
-										<input type="file" name="image"/>
-									</div>
-									<button type="submit" name="submit" class="btn btn-primary">Submit</button>
-								</form>
-
+								</div>
 							'; 
 
 							

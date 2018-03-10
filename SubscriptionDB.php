@@ -8,28 +8,29 @@ use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\DB;
 //use PDO;
 
-class CapperDB extends DB
+class SubscriptionDB extends DB
 {
     /**
-     * Initialize capper table
+     * Initialize subscription table
      */
-    public static function initializeCapper()
+    public static function initializeSubscription()
     {
-        if (!defined('TB_CAPPER')) {
-            define('TB_CAPPER', self::$table_prefix . 'capper');
+        if (!defined('TB_SUBSCRIPTION')) {
+            define('TB_SUBSCRIPTION', self::$table_prefix . 'subscription');
         }
     }
 
     /**
-     * Select a cappers from the DB
+     * Select a subscriptions from the DB
      *
      * @param int   $id
+     * @param int   $sended
      * @param int|null $limit
      *
      * @return array|bool
      * @throws TelegramException
      */
-    public static function selectCapper($id = null, $limit = null)
+    public static function selectSubscription($id = null, $price = null, $limit = null)
     {
         if (!self::isDbConnected()) {
             return false;
@@ -38,7 +39,7 @@ class CapperDB extends DB
         try {
             $sql = '
               SELECT *
-              FROM `' . TB_CAPPER . '`
+              FROM `' . TB_SUBSCRIPTION . '`
             ';
 
             $where = array();
@@ -50,6 +51,10 @@ class CapperDB extends DB
                 else {
                     $where[] = '`id` = :id';
                 }
+            }
+            
+            if ($price !== null) {
+                $where[] = '`price` = :price';
             }
 
             if(count($where)) {
@@ -66,6 +71,10 @@ class CapperDB extends DB
                 $sth->bindValue(':id', $id, PDO::PARAM_INT);
             }
 
+            if($price !== null) {
+                $sth->bindValue(':price', $price, PDO::PARAM_INT);
+            }
+
             if ($limit !== null) {
                 $sth->bindValue(':limit', $limit, PDO::PARAM_INT);
             }
@@ -79,35 +88,34 @@ class CapperDB extends DB
     }
 
     /**
-     * Insert the capper in the database
+     * Insert the subscription in the database
      *
-     * @param string $name
-     * @param string $description
+     * @param int $id
+     * @param int $sended
      *
-     * @return string last insert id
+     * @return bool
      * @throws TelegramException
      */
-    public static function insertCapper($name, $description)
+    public static function insertSubscription($name, $duration, $price)
     {
         if (!self::isDbConnected()) {
             return false;
         }
 
         try {
-            $sth = self::$pdo->prepare('INSERT INTO `' . TB_CAPPER . '`
-                (`name`, `description`)
+            $sth = self::$pdo->prepare('INSERT INTO `' . TB_SUBSCRIPTION . '`
+                (`name`, `duration`, `price`)
                 VALUES
-                (:name, :description)
+                (:name, :duration, :price)
             ');
 
             // $date = self::getTimestamp();
 
             $sth->bindValue(':name', $name);
-            $sth->bindValue(':description', $description);
+            $sth->bindValue(':duration', $description);
+            $sth->bindValue(':price', $price);
 
-            $sth->execute();
-
-            return self::$pdo->lastInsertId();
+            return $sth->execute();
         } catch (Exception $e) {
             throw new TelegramException($e->getMessage());
         }
@@ -122,27 +130,8 @@ class CapperDB extends DB
      * @return bool
      * @throws TelegramException
      */
-    public static function updateCapper(array $fields_values, array $where_fields_values)
+    public static function updateSubscription(array $fields_values, array $where_fields_values)
     {
-        return self::update(TB_CAPPER, $fields_values, $where_fields_values);
-    }
-
-    public function deleteCapper($id) 
-    {
-        if (!self::isDbConnected()) {
-            return false;
-        }
-
-        try {
-            $sth = self::$pdo->prepare('DELETE FROM `' . TB_CAPPER . '`
-                WHERE `id` = :id
-            ');
-
-            $sth->bindValue(':id', $id);
-
-            return $sth->execute();
-        } catch (Exception $e) {
-            throw new TelegramException($e->getMessage());
-        }
+        return self::update(TB_SUBSCRIPTION, $fields_values, $where_fields_values);
     }
 }

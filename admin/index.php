@@ -11,11 +11,17 @@
 						require_once __DIR__ . '/../vendor/autoload.php';
 						require_once __DIR__.'/../CapperDB.php';
 						require_once __DIR__.'/../UserDB.php';
+						require_once __DIR__.'/../ForecastDB.php';
+						require_once __DIR__.'/../SubscriptionDB.php';
+						require_once __DIR__.'/../SubscriberDB.php';
 
 						use Longman\TelegramBot\DB;
 						
 						CapperDB::initializeCapper();
 						UserDB::initializeUser();
+						ForecastDB::initializeForecast();
+						SubscriptionDB::initializeSubscription();
+						SubscriberDB::initializeSubscriber();
 
 						if(!file_exists(__DIR__.'/../config.php')) {
 							die("Please rename example_config.php to config.php and try again. \n");
@@ -30,16 +36,27 @@
 							// Enable MySQL
 							$telegram->enableMySql($mysql_credentials);
 
-							$cappers = CapperDB::selectCapper();
+							if(isset($_GET['remove_capper_id'])) {
+								CapperDB::deleteCapper($_GET['remove_capper_id']);
+							}
 
 							print '<div class="row placeholders">';
+
+							$cappers = CapperDB::selectCapper();
 
 							foreach ($cappers as $capper) {
 								print '
 									<div class="col-xs-6 col-sm-3 placeholder">
-										<a href="capper-add.php?id='.$capper['id'].'"><img src="'.$images_dir.current(glob($images_dir.$capper['id'].'.*')).'" class="img-responsive" alt="Generic placeholder thumbnail"></a>
+										<a href="capper-edit.php?id='.$capper['id'].'">
+											<img src="'.$images_dir.current(glob($images_dir.$capper['id'].'.*')).'" class="img-responsive" alt="Generic placeholder thumbnail">
+										</a>
 										<h4>'.$capper['name'].'</h4>
-										<span class="text-muted">'.$capper['description'].'</span>
+										<span class="text-muted">'.$capper['description'].'</span><br>
+										<span>
+											<a href="capper-edit.php?id='.$capper['id'].'">Изменить</a> 
+											<a href="index.php?remove_capper_id='.$capper['id'].'">Удалить</a> 
+											<a href="forecast.php?capper_id='.$capper['id'].'">Прогнозы ('.count(ForecastDB::selectForecast(null, $capper['id'])).')</a>
+										</span>
 									</div>
 								';
 							}
@@ -66,6 +83,7 @@
 							$users = UserDB::selectUser();
 
 							foreach ($users as $user) {
+
 								print '
 											<tr>
 												<td>'.$user['id'].'</td>
@@ -73,6 +91,7 @@
 												<td>'.$user['username'].'</td>
 												<td>'.$user['created_at'].'</td>
 												<td>'.$user['updated_at'].'</td>
+												<td>'.count(SubscriberDB::selectSubscriber(null, null, null, $user['id'], null, null, null, 1)).'</td>
 											</tr>
 								';
 							}
@@ -82,6 +101,42 @@
 									</table>
 								</div>
 							';
+
+							print '<h2 class="sub-header">Типы подписок</h2>
+								<div class="table-responsive">
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Название</th>
+												<th>Длителньость</th>
+												<th>Цена</th>
+											</tr>
+										</thead>
+										<tbody>
+							';
+
+
+							$subscriptions = SubscriptionDB::selectSubscription();
+
+							foreach ($subscriptions as $subscription) {
+
+								print '
+											<tr>
+												<td>'.$subscription['id'].'</td>
+												<td>'.$subscription['name'].' </td>
+												<td>'.($subscription['duration'] / 60 / 60 / 24).' д. </td>
+												<td>'.$subscription['price'].' руб.</td>
+											</tr>
+								';
+							}
+
+							print '
+										</tbody>
+									</table>
+								</div>
+							';
+
 
 						
 						} catch (Longman\TelegramBot\Exception\TelegramException $e) {

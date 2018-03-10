@@ -2,7 +2,6 @@ config.php
 .directory
 composer.lock
 /vendor/
-/images/*
 cookies
 *.pid
 test.php

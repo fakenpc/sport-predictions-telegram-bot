@@ -33,8 +33,6 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="index.php">Главная страница</a></li>
 						<li><a href="capper-edit.php">Добавить каппера</a></li>
-						<li><a href="#">Profile</a></li>
-						<li><a href="#">Help</a></li>
 					</ul>
 				</div>
 			</div>

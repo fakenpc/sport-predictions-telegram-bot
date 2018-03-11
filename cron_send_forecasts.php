@@ -48,10 +48,10 @@ try {
     	$forecasts = ForecastDB::selectForecast(null, $subscriber['capper_id']);
 
     	foreach ($forecasts as $forecast) {
-    		echo time(). ' '. $forecast['disabling_timestamp'].' '. $forecast['sending_timestamp'].PHP_EOL;
+
     		if(time() < $forecast['disabling_timestamp'] && time() > $forecast['sending_timestamp']) {
     			$forecastSended = ForecastSendedDB::selectForecastSended(null, $forecast['id'], $subscriber['id']);
-    			var_dump($forecastSended);
+
     			// if forecast dont sended to current subscriber
     			if(!count($forecastSended)) {
     				// send
@@ -62,7 +62,7 @@ try {
 					]);
 
     				// mark sended
-    				// ForecastSendedDB::insertForecastSended($forecast['id'], $subscriber['id']);
+    				ForecastSendedDB::insertForecastSended($forecast['id'], $subscriber['id']);
 
     				$number_sended_forecasts++;
     			}

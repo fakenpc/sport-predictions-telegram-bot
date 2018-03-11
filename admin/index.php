@@ -83,6 +83,8 @@
 							$users = UserDB::selectUser();
 
 							foreach ($users as $user) {
+								// capper subscribers with user_id
+								$subscribers = SubscriberDB::selectSubscriber(null, null, null, $user['id'], null, null, null, 1);
 
 								print '
 											<tr>
@@ -93,9 +95,26 @@
 												<td>'.$user['updated_at'].'</td>
 												<td>
 													
-													<button class="btn btn-default" data-toggle="collapse" data-target="#hide-subscriber-'.$user['id'].'">'.count(SubscriberDB::selectSubscriber(null, null, null, $user['id'], null, null, null, 1)).' шт, показать</button>
+													<button class="btn btn-default" data-toggle="collapse" data-target="#hide-subscriber-'.$user['id'].'">'.count($subscribers).' шт, показать</button>
 													<div id="hide-subscriber-'.$user['id'].'" class="collapse">
-														Нет подписок
+								';
+								if(count($subscribers)) {
+									foreach ($subscribers as $subscriber) {
+										$cappers = CapperDB::selectCapper($subscriber['capper_id']);
+
+										if(count($cappers)) {
+											$capper = $cappers[0];
+
+											print '('.$capper['name'].') ';
+										}
+									}
+									
+								} else {
+									print 'Нет подписок';
+								}
+								
+
+								print '						
 													</div>
 												</td>
 											</tr>

@@ -67,6 +67,7 @@
 												<th>Ординар / эксперсс / ординарэкспресс</th>
 												<th>Описание прогноза</th>
 												<th>Время отправки прогноза</th>
+												<th>Время потери актуальности прогноза</th>
 												<th>Редактировать</th>
 											</tr>
 										</thead>
@@ -81,6 +82,7 @@
 											<td><pre>'.$forecast['name'].'</pre></td>
 											<td><pre>'.$forecast['description'].'</pre></td>
 											<td>'.date('Y-m-d H:i:s', $forecast['sending_timestamp']).'</td>
+											<td>'.date('Y-m-d H:i:s', $forecast['disabling_timestamp']).'</td>
 											<td>
 												<a href="forecast-edit.php?id='.$forecast['id'].'&capper_id='.$capper['id'].'">Изменить</a> 
 												<a href="forecast.php?remove_forecast_id='.$forecast['id'].'&capper_id='.$capper['id'].'">Удалить</a> 

@@ -32,6 +32,11 @@
 
 						    // Enable MySQL
     						$telegram->enableMySql($mysql_credentials);
+
+    						if(isset($_GET['remove_forecast_id'])) {
+    							ForecastDB::deleteForecast($_GET['remove_forecast_id']);
+    						}
+
     						@$capper_id = intval($_GET['capper_id']);
 
 							$cappers = CapperDB::selectCapper($capper_id);
@@ -74,13 +79,13 @@
 									print '
 										<tr>
 											<td>'.$forecast['id'].'</td>
-											<td>'.$forecast['name'].'</td>
-											<td>'.$forecast['description'].'</td>
+											<td><pre>'.$forecast['name'].'</pre></td>
+											<td><pre>'.$forecast['description'].'</pre></td>
 											<td>'.date('Y-m-d H:i:s', $forecast['sending_timestamp']).'</td>
 											<td>'.($forecast['sended'] ? 'да' : 'нет').'</td>
 											<td>
 												<a href="forecast-edit.php?id='.$forecast['id'].'&capper_id='.$capper['id'].'">Изменить</a> 
-												<a href="forecast-remove.php?id='.$forecast['id'].'">Удалить</a> 
+												<a href="forecast.php?remove_forecast_id='.$forecast['id'].'&capper_id='.$capper['id'].'">Удалить</a> 
 											</td>
 										</tr>
 

@@ -135,6 +135,30 @@ class SubscriberDB extends DB
         }
     }
 
+    public function selectActiveSubscriber() 
+    {
+        if (!self::isDbConnected()) {
+            return false;
+        }
+
+        try {
+            $sql = '
+              SELECT *
+              FROM `' . TB_SUBSCRIBER . '`
+              WHERE `paid` = 1
+              AND `end_timestamp` > "'.time().'"
+            ';
+
+            $sth = self::$pdo->prepare($sql);
+
+            $sth->execute();
+
+            return $sth->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new TelegramException($e->getMessage());
+        }    
+    }
+
     /**
      * Insert the subscriber in the database
      *

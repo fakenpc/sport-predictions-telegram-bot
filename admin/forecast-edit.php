@@ -80,7 +80,7 @@
 										<form enctype="multipart/form-data" action="?capper_id='.$_GET['capper_id'].'&'.($id ? 'id='.$id : '#').'" method="POST">
 											<div class="form-group">
 												<label for="name">Ординар / эксперсс / ординарэкспресс</label>
-												<input type="text" class="form-control" name="name" placeholder="Имя" value="'.$name.'">
+												<textarea class="form-control" rows="5" name="name" placeholder="Имя">'.$name.'</textarea>
 											</div>
 											<div class="form-group">
 												<label for="description">Описание</label>

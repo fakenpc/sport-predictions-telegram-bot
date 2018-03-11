@@ -8,30 +8,30 @@ use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\DB;
 //use PDO;
 
-class ForecastDB extends DB
+class ForecastSendedDB extends DB
 {
     /**
-     * Initialize forecast table
+     * Initialize forecast_sended table
      */
-    public static function initializeForecast()
+    public static function initializeForecastSended()
     {
-        if (!defined('TB_FORECAST')) {
-            define('TB_FORECAST', self::$table_prefix . 'forecast');
+        if (!defined('TB_FORECAST_SENDED_SENDED')) {
+            define('TB_FORECAST_SENDED', self::$table_prefix . 'forecast_sended');
         }
     }
 
     /**
-     * Select a forecasts from the DB
+     * Select a forecast_sended from the DB
      *
      * @param int   $id
-     * @param int   $capper_id
-     * @param int   $sended
+     * @param int   $forecast_id
+     * @param int   $subscriber_id
      * @param int|null $limit
      *
      * @return array|bool
      * @throws TelegramException
      */
-    public static function selectForecast($id = null, $capper_id = null, $sended = null, $limit = null)
+    public static function selectForecastSended($id = null, $forecast_id = null, $subscriber_id = null, $limit = null)
     {
         if (!self::isDbConnected()) {
             return false;
@@ -40,7 +40,7 @@ class ForecastDB extends DB
         try {
             $sql = '
               SELECT *
-              FROM `' . TB_FORECAST . '`
+              FROM `' . TB_FORECAST_SENDED . '`
             ';
 
             $where = array();
@@ -54,12 +54,12 @@ class ForecastDB extends DB
                 }
             }
 
-            if($capper_id !== null) {
-                $where[] = '`capper_id` = :capper_id';
+            if($forecast_id !== null) {
+                $where[] = '`forecast_id` = :forecast_id';
             }
 
-            if($sended !== null) {
-                $where[] = '`sended` = :sended';
+            if($subscriber_id !== null) {
+                $where[] = '`subscriber_id` = :subscriber_id';
             }
 
             if(count($where)) {
@@ -76,12 +76,12 @@ class ForecastDB extends DB
                 $sth->bindValue(':id', $id, PDO::PARAM_INT);
             }
 
-            if($capper_id !== null) {
-                $sth->bindValue(':capper_id', $capper_id, PDO::PARAM_INT);
+            if($forecast_id !== null) {
+                $sth->bindValue(':forecast_id', $forecast_id, PDO::PARAM_INT);
             }
 
-            if($sended !== null) {
-                $sth->bindValue(':sended', $sended, PDO::PARAM_INT);
+            if($subscriber_id !== null) {
+                $sth->bindValue(':subscriber_id', $subscriber_id, PDO::PARAM_INT);
             }
 
             if ($limit !== null) {
@@ -103,32 +103,28 @@ class ForecastDB extends DB
      * @param string $description
      * @param int $sending_timestamp
      * @param int $disabling_timestamp
-     * @param int $sended
+     * @param int $subscriber_id
      *
      * @return string last insert id
      * @throws TelegramException
      */
-    public static function insertForecast($capper_id, $name, $description, $sending_timestamp, $disabling_timestamp, $sended)
+    public static function insertForecastSended($forecast_id, $subscriber_id)
     {
         if (!self::isDbConnected()) {
             return false;
         }
 
         try {
-            $sth = self::$pdo->prepare('INSERT INTO `' . TB_FORECAST . '`
-                (`capper_id`, `name`, `description`, `sending_timestamp`, `disabling_timestamp`, `sended`)
+            $sth = self::$pdo->prepare('INSERT INTO `' . TB_FORECAST_SENDED . '`
+                (`forecast_id`, `subscriber_id`)
                 VALUES
-                (:capper_id, :name, :description, :sending_timestamp, :disabling_timestamp, :sended)
+                (:forecast_id, :subscriber_id)
             ');
 
             // $date = self::getTimestamp();
 
-            $sth->bindValue(':capper_id', $capper_id);
-            $sth->bindValue(':name', $name);
-            $sth->bindValue(':description', $description);
-            $sth->bindValue(':sending_timestamp', $sending_timestamp);
-            $sth->bindValue(':disabling_timestamp', $disabling_timestamp);
-            $sth->bindValue(':sended', $sended);
+            $sth->bindValue(':forecast_id', $forecast_id);
+            $sth->bindValue(':subscriber_id', $subscriber_id);
 
             $sth->execute();
 
@@ -147,9 +143,9 @@ class ForecastDB extends DB
      * @return bool
      * @throws TelegramException
      */
-    public static function updateForecast(array $fields_values, array $where_fields_values)
+    public static function updateForecastSended(array $fields_values, array $where_fields_values)
     {
-        return self::update(TB_FORECAST, $fields_values, $where_fields_values);
+        return self::update(TB_FORECAST_SENDED, $fields_values, $where_fields_values);
     }
 
     public function deleteForecast($id) 
@@ -159,7 +155,7 @@ class ForecastDB extends DB
         }
 
         try {
-            $sth = self::$pdo->prepare('DELETE FROM `' . TB_FORECAST . '`
+            $sth = self::$pdo->prepare('DELETE FROM `' . TB_FORECAST_SENDED . '`
                 WHERE `id` = :id
             ');
 

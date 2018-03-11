@@ -91,7 +91,13 @@
 												<td>'.$user['username'].'</td>
 												<td>'.$user['created_at'].'</td>
 												<td>'.$user['updated_at'].'</td>
-												<td>'.count(SubscriberDB::selectSubscriber(null, null, null, $user['id'], null, null, null, 1)).'</td>
+												<td>
+													
+													<button class="btn btn-default" data-toggle="collapse" data-target="#hide-subscriber-'.$user['id'].'">'.count(SubscriberDB::selectSubscriber(null, null, null, $user['id'], null, null, null, 1)).' шт, показать</button>
+													<div id="hide-subscriber-'.$user['id'].'" class="collapse">
+														Нет подписок
+													</div>
+												</td>
 											</tr>
 								';
 							}

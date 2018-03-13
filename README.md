@@ -1,2 +1,2 @@
 # sport-predictions-telegram-bot
-telegram bot - forecasts for sport
+Бот для продажи спортивных прогнозов в телеграмм. @sportforecastsbot

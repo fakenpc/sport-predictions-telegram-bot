@@ -19,8 +19,10 @@ use Longman\TelegramBot\Conversation;
 
 require_once __DIR__.'/../SubscriberDB.php';
 require_once __DIR__.'/../CapperDB.php';
+require_once __DIR__.'/../ForecastDB.php';
 use SubscriberDB;
 use CapperDB;
+use ForecastDB;
 
 /**
  * Callback query command
@@ -79,7 +81,9 @@ class CallbackqueryCommand extends SystemCommand
 
         @list($command, $command_data) = explode(" ", $callback_data, 2);
         $result = Request::emptyResponse();
-        SubscriberDB::initializeSubscriberDB();
+        
+        SubscriberDB::initializeSubscriber();
+        ForecastDB::initializeForecast();
 
         switch ($command) {
 
@@ -91,9 +95,9 @@ class CallbackqueryCommand extends SystemCommand
                 $subscription_paid = false;
                 $subscription_end_timestamp = 0;
 
-                foreach($subscribers as $subscriber) {
-                    $subscriber = $subscribers[0];
+                var_dump($subscribers);
 
+                foreach($subscribers as $subscriber) {
                     if($subscriber['paid']) {
                         $subscription_paid = true;
                         $subscription_end_timestamp = $subscriber['end_timestamp'];
@@ -108,14 +112,14 @@ class CallbackqueryCommand extends SystemCommand
                         $flag = true;
 
                         if($subscription_paid) {
-                            $text = $forecast['name'].PHP_EOL.$forecast['description'];
+                            $text = 'Прогноз: '.PHP_EOL.$forecast['name'].PHP_EOL.$forecast['description'];
                         } else {
-                            $text = $forecast['name'];
+                            $text = 'Прогноз: '.PHP_EOL.$forecast['name'];
                         }
 
                         Request::sendMessage([
                             'chat_id'      => $chat_id,
-                            'text'         => $text;
+                            'text'         => $text
                         ]);
                     }
                 }
@@ -130,26 +134,28 @@ class CallbackqueryCommand extends SystemCommand
                 if($subscription_paid) {
                     Request::sendMessage([
                         'chat_id'      => $chat_id,
-                        'text'         => 'Вы подписаны на данного каппера. '.PHP_EOL.' Ваша подписка истекает: '.date('Y-m-d H:i:s', $subscription_end_timestamp)
+                        'text'         => 'Вы подписаны на рассылку данного каппера. Как только каппер добавит новый прогноз, вы сразу его получите. '.PHP_EOL.'Ваша подписка истекает: '.date('Y-m-d H:i:s', $subscription_end_timestamp)
                     ]);
                 }
                 else {
-                    $text = 'Приобрести подписку на каппера.';
+
+                    $inline_keyboard = new InlineKeyboard([
+                        ['text' => "Приобрести подписку", 'callback_data' => 'subscription_buy '.$capper_id],
+                    ]);
 
                     Request::sendMessage([
                         'chat_id'      => $chat_id,
-                        'text'         => 'Приобрести подписку на каппера.'
+                        'text'         => 'Вы можете подписаться и в автоматическом режиме получать все самые свежие прогнозы этого каппера.',
+                        'reply_markup' => $inline_keyboard
                     ]);
 
-                    $inline_keyboard = new InlineKeyboard([
-                        ['text' => "Выбрать", 'callback_data' => 'subscription_buy '.$capper['id']],
-                    ]);
                 }
 
                 break;
                 
             case 'subscription_buy':
                 $capper_id = $command_data;
+
                 break;
             
             default:
@@ -160,40 +166,5 @@ class CallbackqueryCommand extends SystemCommand
         return $result;
     }
 
-    /**
-     * Show filters keyboard
-     *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
-     */
-    private function showFiltersKeyboard()
-    {
-        $callback_query    = $this->getCallbackQuery();
-        $chat_id = $callback_query->getMessage()->getChat()->getId();
-
-        FilterDB::initializeFilter();
-        $filters = FilterDB::selectFilter($chat_id);
-
-        $keyboard_buttons = [];
-
-        foreach ($filters as $filter) {
-            $keyboard_buttons[] = [
-                ['text' => "\xE2\x9E\x96 ".$filter['word'], 'callback_data' => 'filter_remove '.$filter['id']]
-            ];
-        }
-
-        $keyboard_buttons[] = [
-            ['text' => "\xE2\x9E\x95 Добавить", 'callback_data' => 'filter_add'],
-            ['text' => "\xE2\x9D\x8C Удалить все", 'callback_data' => 'filter_remove_all'],
-        ];
-
-        $class_name = '\Longman\TelegramBot\Entities\InlineKeyboard';
-        $inline_keyboard = new $class_name(...$keyboard_buttons);
-
-        return Request::sendMessage([
-            'chat_id'      => $chat_id,
-            'text'         => 'Управление фильтрами.',
-            'reply_markup' => $inline_keyboard
-        ]);
-    }
+   
 }

@@ -42,7 +42,7 @@ try {
     }
 
     $number_sended_forecasts = 0;
-    $subscribers = SubscriberDB::selectActiveSubscriber();
+    $subscribers = SubscriberDB::selectActiveSubscriber(null, null, null, null, null, null, 1);
 
     foreach ($subscribers as $subscriber) {
     	$forecasts = ForecastDB::selectForecast(null, $subscriber['capper_id']);

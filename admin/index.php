@@ -116,6 +116,8 @@
 										}
 
 										print $subscriber['paid'] ? 'оплачена, ' : 'не оплачена, ';
+										print $subscriber['end_timestamp'] > time() ? 'действительна, ' : 'окончилась, ';
+
 										print ')';
 										print '<br>';
 

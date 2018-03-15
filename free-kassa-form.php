@@ -36,19 +36,21 @@ try {
     }
 
     $subscriptions = SubscriptionDB::selectSubscription($_GET['subscription_id']);
+    $cappers = CapperDB::selectCapper($_GET['capper_id']);
 
-	if(count($subscriptions)) {
+	if(count($subscriptions) && count($cappers)) {
 		$subscription = $subscriptions[0];
-		$hash = md5($merchant_id.":".$subscription['price'].":".$merchant_secret_form.":".$_GET['user_id']);
+		$capper = $cappers[0];
+		$subscriber_id = SubscriberDB::insertSubscriber($_GET['capper_id'], $_GET['subscription_id'], $_GET['user_id'], $_GET['chat_id'], time(), time() + $subscription['duration'], 0);
+
+		$hash = md5($merchant_id.":".$subscription['price'].":".$merchant_secret_form.":".$subscriber_id);
 		
 		print '
-		<h2>Оплата через <a href="http://wwww.free-kassa.ru">free-kassa.ru</a></h2>
 		<form method=GET action="http://www.free-kassa.ru/merchant/cash.php">
 		    <input type="hidden" name="m" value="'.$merchant_id.'">
 		    <input type="hidden" name="oa" value="'.$subscription['price'].'">
 		    <input type="hidden" name="s" value="'.$hash.'">
-		    <input type="hidden" name="o" value="'.$_GET['user_id'].'">
-		    <input type="hidden" name="us_capper_id" value="'.$_GET['capper_id'].'">
+		    <input type="hidden" name="o" value="'.$subscriber_id.'">
 		    <input type="submit" value="Оплатить">
 		</form>
 		';

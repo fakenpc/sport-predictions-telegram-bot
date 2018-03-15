@@ -266,7 +266,9 @@ class SubscriberDB extends DB
             $sth->bindValue(':end_timestamp', $end_timestamp);
             $sth->bindValue(':paid', $paid);
 
-            return $sth->execute();
+            $sth->execute();
+
+            return self::$pdo->lastInsertId();
         } catch (Exception $e) {
             throw new TelegramException($e->getMessage());
         }

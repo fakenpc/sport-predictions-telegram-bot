@@ -164,7 +164,7 @@ class CallbackqueryCommand extends SystemCommand
 
                 foreach ($subscriptions as $subscription) {
                     $inline_keyboard = new InlineKeyboard([
-                        ['text' => "Оплатить", 'url' => $bot_url.'free-kassa-form.php?user_id='.$user_id.'&capper_id='.$capper_id.'&subscription_id='.$subscription['id']],
+                        ['text' => "Оплатить", 'url' => $bot_url.'free-kassa-form.php?user_id='.$user_id.'&chat_id='.$chat_id.'&capper_id='.$capper_id.'&subscription_id='.$subscription['id']],
                     ]);
 
                     Request::sendMessage([

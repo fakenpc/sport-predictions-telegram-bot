@@ -253,7 +253,7 @@ class SubscriberDB extends DB
             $sth = self::$pdo->prepare('INSERT INTO `' . TB_SUBSCRIBER . '`
                 (`capper_id`, `subscription_id`, `user_id`, `chat_id`, `start_timestamp`, `end_timestamp`, `paid`)
                 VALUES
-                (:capper_id, :subscription_id, :chat_id, :start_timestamp, :start_timestamp, :end_timestamp, :paid)
+                (:capper_id, :subscription_id, :user_id, :chat_id, :start_timestamp, :end_timestamp, :paid)
             ');
 
             // $date = self::getTimestamp();

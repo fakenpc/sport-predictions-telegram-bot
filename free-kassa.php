@@ -37,7 +37,7 @@ try {
 
 	
 	if (!in_array(getIP(), array('136.243.38.147', '136.243.38.149', '136.243.38.150', '136.243.38.151', '136.243.38.189', '88.198.88.98'))) {
-		// die("hacking attempt!");
+		die("hacking attempt!");
 	}
 
 	$sign = md5($merchant_id.':'.$_REQUEST['AMOUNT'].':'.$merchant_secret_response.':'.$_REQUEST['MERCHANT_ORDER_ID']);
@@ -49,15 +49,14 @@ try {
 	//Так же, рекомендуется добавить проверку на сумму платежа и не была ли эта заявка уже оплачена или отменена
 	//Оплата прошла успешно, можно проводить операцию.
 
-	$subscribers = SubscriberDB::selectSubsciber($_REQUEST['MERCHANT_ORDER_ID']);
+	$subscribers = SubscriberDB::selectSubscriber($_REQUEST['MERCHANT_ORDER_ID']);
 
 	if(count($subscribers)) {
 		$subscriber = $subscribers[0];
 		SubscriberDB::updateSubscriber(['paid' => 1], ['id' => $_REQUEST['MERCHANT_ORDER_ID']]);
 		Request::sendMessage([
             'chat_id'      => $subscriber['chat_id'],
-            'text'         => 'Вы успешно приобрели подписку! ',
-            'reply_markup' => $inline_keyboard
+            'text'         => 'Вы успешно приобрели подписку! '
         ]);
 		print 'YES'; 
 	} else {

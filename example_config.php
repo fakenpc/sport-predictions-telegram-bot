@@ -22,4 +22,12 @@ $hook_url = 'https://your-domain/path/to/hook.php';
 // path to public key of self-signed certificate
 $certificate_path = 'webhook_cert.pem';
 
+// free-kassa
+$merchant_id = '';
+$merchant_secret_form = '';	// secret word 1
+$merchant_secret_response = '';	// scret word 2
+
+// bot location url
+$bot_url = 'http://example.com/sport-predictions-telegram-bot/';
+
 ?>

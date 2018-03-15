@@ -18,9 +18,11 @@ use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Conversation;
 
 require_once __DIR__.'/../SubscriberDB.php';
+require_once __DIR__.'/../SubscriptionDB.php';
 require_once __DIR__.'/../CapperDB.php';
 require_once __DIR__.'/../ForecastDB.php';
 use SubscriberDB;
+use SubscriptionDB;
 use CapperDB;
 use ForecastDB;
 
@@ -84,6 +86,7 @@ class CallbackqueryCommand extends SystemCommand
         
         SubscriberDB::initializeSubscriber();
         ForecastDB::initializeForecast();
+        SubscriptionDB::initializeSubscription();
 
         switch ($command) {
 
@@ -155,6 +158,22 @@ class CallbackqueryCommand extends SystemCommand
                 
             case 'subscription_buy':
                 $capper_id = $command_data;
+                global $bot_url;
+
+                $subscriptions = SubscriptionDB::selectSubscription();
+
+                foreach ($subscriptions as $subscription) {
+                    $inline_keyboard = new InlineKeyboard([
+                        ['text' => "Оплатить", 'url' => $bot_url.'free-kassa-form.php?user_id='.$user_id.'&capper_id='.$capper_id.'&subscription_id='.$subscription['id']],
+                    ]);
+
+                    Request::sendMessage([
+                        'chat_id'      => $chat_id,
+                        'text'         => $subscription['name'].PHP_EOL.'Цена: '.$subscription['price'],
+                        'reply_markup' => $inline_keyboard
+                    ]);
+                }
+
 
                 break;
             

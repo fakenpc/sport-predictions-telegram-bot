@@ -32,7 +32,6 @@
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="index.php">Главная страница</a></li>
-						<li><a href="capper-edit.php">Добавить каппера</a></li>
 					</ul>
 				</div>
 			</div>

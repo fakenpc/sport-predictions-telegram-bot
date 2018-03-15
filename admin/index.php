@@ -3,7 +3,6 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-10 col-sm-offset-1 main">
-					<h1 class="page-header">Список капперов</h1>
 
 					<?php
 						$images_dir = '../images/';
@@ -40,6 +39,11 @@
 								CapperDB::deleteCapper($_GET['remove_capper_id']);
 							}
 
+							if(isset($_GET['remove_subscription_id'])) {
+								SubscriptionDB::deleteSubscription($_GET['remove_subscription_id']);
+							}
+		
+							print '<h1 class="page-header">Список капперов [<a href="capper-edit.php">+</a>]</h1>';
 							print '<div class="row placeholders">';
 
 							$cappers = CapperDB::selectCapper();
@@ -98,6 +102,7 @@
 													<button class="btn btn-default" data-toggle="collapse" data-target="#hide-subscriber-'.$user['id'].'">'.count($subscribers).' шт, показать</button>
 													<div id="hide-subscriber-'.$user['id'].'" class="collapse">
 								';
+
 								if(count($subscribers)) {
 									foreach ($subscribers as $subscriber) {
 										$cappers = CapperDB::selectCapper($subscriber['capper_id']);
@@ -141,7 +146,7 @@
 								</div>
 							';
 
-							print '<h2 class="sub-header">Типы подписок</h2>
+							print '<h2 class="sub-header">Типы подписок [<a href="subscription-edit.php">+</a>]</h2>
 								<div class="table-responsive">
 									<table class="table table-striped">
 										<thead>
@@ -150,6 +155,7 @@
 												<th>Название</th>
 												<th>Длителньость</th>
 												<th>Цена</th>
+												<th>Редактировать</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -164,8 +170,12 @@
 											<tr>
 												<td>'.$subscription['id'].'</td>
 												<td>'.$subscription['name'].' </td>
-												<td>'.($subscription['duration'] / 60 / 60 / 24).' д. </td>
+												<td>'.(int)($subscription['duration'] / 60 / 60 / 24).' д. </td>
 												<td>'.$subscription['price'].' руб.</td>
+												<td>
+													<a href="subscription-edit.php?id='.$subscription['id'].'">Изменить</a> 
+													<a href="index.php?remove_subscription_id='.$subscription['id'].'">Удалить</a> 
+												</td>
 											</tr>
 								';
 							}

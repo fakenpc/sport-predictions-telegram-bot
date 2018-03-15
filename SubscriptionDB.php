@@ -112,7 +112,7 @@ class SubscriptionDB extends DB
             // $date = self::getTimestamp();
 
             $sth->bindValue(':name', $name);
-            $sth->bindValue(':duration', $description);
+            $sth->bindValue(':duration', $duration);
             $sth->bindValue(':price', $price);
 
             return $sth->execute();
@@ -133,5 +133,24 @@ class SubscriptionDB extends DB
     public static function updateSubscription(array $fields_values, array $where_fields_values)
     {
         return self::update(TB_SUBSCRIPTION, $fields_values, $where_fields_values);
+    }
+
+    public function deleteSubscription($id) 
+    {
+        if (!self::isDbConnected()) {
+            return false;
+        }
+
+        try {
+            $sth = self::$pdo->prepare('DELETE FROM `' . TB_SUBSCRIPTION . '`
+                WHERE `id` = :id
+            ');
+
+            $sth->bindValue(':id', $id);
+
+            return $sth->execute();
+        } catch (Exception $e) {
+            throw new TelegramException($e->getMessage());
+        }
     }
 }

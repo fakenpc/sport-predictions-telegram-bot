@@ -35,20 +35,12 @@ try {
     	print date('Y-m-d H:i:s', time()). " - Can't connect to mysql database. \n";
     }
 
-    $fk_merchant_id = '1'; //merchant_id ID мазагина в free-kassa.ru http://free-kassa.ru/merchant/cabinet/help/
-	$fk_merchant_key = 'secret'; //Секретное слово http://free-kassa.ru/merchant/cabinet/profile/tech.php
-
-	if (isset($_GET['prepare_once'])) {
-	    $hash = md5($merchant_id.":".$_GET['oa'].":".$fk_merchant_key.":".$_GET['l']);
-	    echo '<hash>'.$hash.'</hash>';
-	    exit;
-	}
-
-	$subscriptions = SubscriptionDB::selectSubscription($_GET['subscription_id']);
+    $subscriptions = SubscriptionDB::selectSubscription($_GET['subscription_id']);
 
 	if(count($subscriptions)) {
-		$hash = md5($merchant_id.":".$subscription['price'].":".$merchant_secret_form.":".$_GET['user_id']);
 		$subscription = $subscriptions[0];
+		$hash = md5($merchant_id.":".$subscription['price'].":".$merchant_secret_form.":".$_GET['user_id']);
+		
 		print '
 		<h2>Оплата через <a href="http://wwww.free-kassa.ru">free-kassa.ru</a></h2>
 		<form method=GET action="http://www.free-kassa.ru/merchant/cash.php">

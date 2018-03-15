@@ -84,7 +84,7 @@
 
 							foreach ($users as $user) {
 								// capper subscribers with user_id
-								$subscribers = SubscriberDB::selectSubscriber(null, null, null, $user['id'], null, null, null, 1);
+								$subscribers = SubscriberDB::selectSubscriber(null, null, null, $user['id']);
 
 								print '
 											<tr>
@@ -101,12 +101,24 @@
 								if(count($subscribers)) {
 									foreach ($subscribers as $subscriber) {
 										$cappers = CapperDB::selectCapper($subscriber['capper_id']);
+										$subscriptions = SubscriptionDB::selectSubscription($subscriber['subscription_id']);
 
+										print '(';
+										
 										if(count($cappers)) {
 											$capper = $cappers[0];
-
-											print '('.$capper['name'].') ';
+											print $capper['name'].', ';
 										}
+										
+										if(count($subscriptions)) {
+											$subscription = $subscriptions[0];
+											print $subscription['name'].', ';
+										}
+
+										print $subscriber['paid'] ? 'оплачена, ' : 'не оплачена, ';
+										print ')';
+										print '<br>';
+
 									}
 									
 								} else {

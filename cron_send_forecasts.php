@@ -59,7 +59,7 @@ try {
                     if(count($images)) {
                         // send photo
                         $result = Request::sendPhoto([
-                            'chat_id' => $chat_id,
+                            'chat_id' => $subscriber['chat_id'],
                             'photo'   => Request::encodeFile($images[0]),
                         ]);
                     }

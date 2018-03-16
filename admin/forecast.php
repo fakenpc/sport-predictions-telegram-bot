@@ -76,10 +76,22 @@
 								$forecasts = ForecastDB::selectForecast(null, $capper_id);
 
 								foreach ($forecasts as $forecast) {
+									$image_filename = current(glob($images_dir.'forecast_'.$forecast['id'].'.*'));
+									$image_location = $images_dir.$image_filename;
+
 									print '
 										<tr>
 											<td>'.$forecast['id'].'</td>
-											<td><pre>'.$forecast['name'].'</pre></td>
+											<td>
+												<pre>'.$forecast['name'].'</pre>
+												'. ($image_filename ? '
+													<button class="btn btn-default" data-toggle="collapse" data-target="#hide-forecast-'.$forecast['id'].'-image">Показать изображение</button>
+													<div id="hide-forecast-'.$forecast['id'].'-image" class="collapse">
+														<img src="'.$image_location.'" class="img-responsive" alt="Generic placeholder thumbnail">
+													</div>
+												' : '') .'
+												
+											</td>
 											<td><pre>'.$forecast['description'].'</pre></td>
 											<td>'.date('Y-m-d H:i:s', $forecast['sending_timestamp']).'</td>
 											<td>'.date('Y-m-d H:i:s', $forecast['disabling_timestamp']).'</td>

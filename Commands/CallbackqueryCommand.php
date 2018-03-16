@@ -114,6 +114,18 @@ class CallbackqueryCommand extends SystemCommand
                     if(time() < $forecast['disabling_timestamp'] && time() > $forecast['sending_timestamp']) {
                         $flag = true;
 
+                        $images_dir_full_path = __DIR__.'/../images/';
+                        $images_dir = '../images/';
+                        $images = glob($images_dir_full_path.'forecast_'.$forecast['id'].'.*');
+
+                        if(count($images)) {
+                            // send capper photo
+                            $result = Request::sendPhoto([
+                                'chat_id' => $chat_id,
+                                'photo'   => Request::encodeFile($images[0]),
+                            ]);
+                        }
+
                         if($subscription_paid) {
                             $text = 'Прогноз: '.PHP_EOL.$forecast['name'].PHP_EOL.$forecast['description'];
                         } else {

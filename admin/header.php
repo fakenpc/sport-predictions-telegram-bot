@@ -32,6 +32,7 @@
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="index.php">Главная страница</a></li>
+						<li><a href="send-messages-to-users.php">Рассылка пользователям</a></li>
 					</ul>
 				</div>
 			</div>

@@ -3,8 +3,6 @@
 set_time_limit(0);
 ini_set('display_errors','on');
 ignore_user_abort(true);
-// Use internal libxml errors -- turn on in production, off for debugging
-libxml_use_internal_errors(true);
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__.'/CapperDB.php';

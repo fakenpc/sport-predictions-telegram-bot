@@ -52,7 +52,19 @@ try {
 
     			// if forecast dont sended to current subscriber
     			if(!count($forecastSended)) {
-    				// send
+                    $images_dir_full_path = __DIR__.'/images/';
+                    $images_dir = 'images/';
+                    $images = glob($images_dir_full_path.'forecast_'.$forecast['id'].'.*');
+
+                    if(count($images)) {
+                        // send photo
+                        $result = Request::sendPhoto([
+                            'chat_id' => $chat_id,
+                            'photo'   => Request::encodeFile($images[0]),
+                        ]);
+                    }
+
+                    // send
     				$text = $forecast['name'].PHP_EOL.$forecast['description'];
 					Request::sendMessage([
 					    'chat_id' => $subscriber['chat_id'],

@@ -119,7 +119,7 @@ class CallbackqueryCommand extends SystemCommand
                         $images = glob($images_dir_full_path.'forecast_'.$forecast['id'].'.*');
 
                         if(count($images)) {
-                            // send capper photo
+                            // send photo
                             $result = Request::sendPhoto([
                                 'chat_id' => $chat_id,
                                 'photo'   => Request::encodeFile($images[0]),

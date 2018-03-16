@@ -44,7 +44,7 @@
 								}
 
 								if($forecast_id) {
-									print "<div class='alert alert-success' role='alert'>Каппер успешно добавлен/обновлен !</div>";
+									print "<div class='alert alert-success' role='alert'>прогноз успешно добавлен/обновлен !</div>";
 								}
 								
 								// upload image
@@ -78,7 +78,7 @@
 
 									// Check if $upload_ok is set to 0 by an error
 									if ($upload_ok == 0) {
-										print "<div class='alert alert-danger' role='alert'>Каппер добавлен/изменен без изображения.</div>";
+										print "<div class='alert alert-danger' role='alert'>прогноз добавлен/изменен без изображения.</div>";
 									// if everything is ok, try to upload file
 									} else {
 										// delete previous images
